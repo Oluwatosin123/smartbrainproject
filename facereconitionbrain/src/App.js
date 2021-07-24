@@ -42,7 +42,8 @@ class App extends Component {
     this.state = {
       input:'',
       imageUrl:'',
-      box:{}
+      box:{},
+      route: 'signin'
     }
   };
 
@@ -52,10 +53,10 @@ class App extends Component {
     const width = Number(image.width);
     const height = Number(image.height);
     return {
-        leftcol: clarifaiFace.left_col * width,
+        leftCol: clarifaiFace.left_col * width,
         topRow: clarifaiFace.top_row * height,
-        rightcol: width -(clarifaiFace.right_col * width),
-        bottomRow: height -(clarifaiFace.bottom_row * height)
+        rightCol: width - (clarifaiFace.right_col * width),
+        bottomRow: height - (clarifaiFace.bottom_row * height)
     }
   }
 
@@ -75,16 +76,24 @@ class App extends Component {
     .catch(err => console.log(err))
   }
 
+  onRouteChange = (route) => {
+    this.setState({route: route})
+  }
+
   render() {
     return (
       <div className="App">
           <Particles className='particles' params={particlesOption}/>
-          <Navigation />
-          <Logo />
-          <Signin />
-          <Rank />
-          <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit}/>
-          <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl}/>
+          <Navigation onRouteChange={this.onRouteChange} />
+          { this.state.route === 'signin'
+            ? <Signin onRouteChange={this.onRouteChange} />
+            : <div>
+                 <Logo />
+                  <Rank />
+                  <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit}/>
+                  <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl}/>
+            </div>
+          }
       </div>
     );
   }
